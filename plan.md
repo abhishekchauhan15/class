@@ -1,0 +1,9 @@
+-.init
+-first view
+- create a room id 
+- own video
+-ability to allow others stream their video
+-styling
+-send messages
+-mute button
+-stop video
