@@ -42,14 +42,14 @@ navigator.mediaDevices
 
     $("html").keydown((e) => {
       if (e.which == 13 && text.val().length !== 0) {
-        console.log(text.val());
+        // console.log(text.val());
         socket.emit("message", text.val());
         text.val(" ");
       }
     });
 
     socket.on("createMessage", (message) => {
-      console.log("this is commign form the server", message);
+      // console.log("this is commign form the server", message);
 
       $(".messages").append(
         `<li class="message"><b>user</b><br/>${message}</li>`
@@ -62,12 +62,12 @@ navigator.mediaDevices
 
 // join this room
 peer.on("open", (id) => {
-  console.log(id);
+  // console.log(id);
   socket.emit("join-room", ROOM_ID, id);
 });
 
 const connecToNewUser = (userId, stream) => {
-  console.log(`new user connected from ${userId}`);
+  // console.log(`new user connected from ${userId}`);
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
   //sending new user our own stream
@@ -88,6 +88,62 @@ const addVideoStream = (video, stream) => {
 const scrollToBottom = () => {
   let d = $(".main__chat_window");
   d.scrollTop(d.prop("scrollHeight"));
+};
+
+//mute our video
+const muteUnmute = () => {
+  const enabled = myVideoStream.getAudioTracks()[0].enabled;
+  // console.log(enabled);
+  if (enabled) {
+    myVideoStream.getAudioTracks()[0].enabled = false;
+    setUnmuteButton();
+  } else {
+    setMuteButton();
+    myVideoStream.getAudioTracks()[0].enabled = true;
+  }
+};
+
+const setMuteButton = () => {
+  const html = `<i class="fas fa-microphone"></i> 
+  <span>Mute</span>`;
+
+  document.querySelector(".main__mute_button").innerHTML = html;
+};
+
+const setUnmuteButton = () => {
+  const html = `<i class="unmute fas fa-microphone-slash"></i> 
+  <span>Unmute</span>
+  `;
+
+  document.querySelector(".main__mute_button").innerHTML = html;
+};
+
+//play and pause our video
+const playStop = () => {
+  let enabled = myVideoStream.getVideoTracks()[0].enabled;
+
+  if (enabled) {
+    myVideoStream.getVideoTracks()[0].enabled = false;
+
+    setStopVideo();
+  } else {
+    setPlayVideo();
+    myVideoStream.getVideoTracks()[0].enabled = true;
+  }
+};
+
+const setPlayVideo = () => {
+  const html = `<i class="fas fa-video"></i> 
+  <span>Stop Video</span>`;
+
+  document.querySelector(".main__video_button").innerHTML = html;
+};
+
+const setStopVideo = () => {
+  const html = `<i class="stop fas fa-video-slash"></i> 
+  <span>Play Video</span>`;
+
+  document.querySelector(".main__video_button").innerHTML = html;
 };
 
 //socket.emit --sends the data

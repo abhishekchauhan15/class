@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
   //user will join the rooom
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
-    console.log(`${roomId} joined the room`);
+    // console.log(`${roomId} joined the room`);
     //adding another user to the room
     socket.broadcast.to(roomId).emit("user-connected", userId);
 
