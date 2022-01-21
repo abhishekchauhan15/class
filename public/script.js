@@ -23,7 +23,7 @@ navigator.mediaDevices
     addVideoStream(myVideo, stream);
     // answering the call
     peer.on("call", (call) => {
-      //when user call us we answer it 
+      //when user call us we answer it
       call.answer(stream);
       const video = document.createElement("video");
 
@@ -35,6 +35,26 @@ navigator.mediaDevices
 
     socket.on("user-connected", (userId) => {
       connecToNewUser(userId, stream);
+    });
+
+    // let text = document.querySelector('input');
+    let text = $("input");
+
+    $("html").keydown((e) => {
+      if (e.which == 13 && text.val().length !== 0) {
+        console.log(text.val());
+        socket.emit("message", text.val());
+        text.val(" ");
+      }
+    });
+
+    socket.on("createMessage", (message) => {
+      console.log("this is commign form the server", message);
+
+      $(".messages").append(
+        `<li class="message"><b>user</b><br/>${message}</li>`
+      );
+      scrollToBottom();
     });
   });
 
@@ -50,7 +70,7 @@ const connecToNewUser = (userId, stream) => {
   console.log(`new user connected from ${userId}`);
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
-  //sending new user our own stream 
+  //sending new user our own stream
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream);
   });
@@ -65,26 +85,10 @@ const addVideoStream = (video, stream) => {
   videoGrid.append(video);
 };
 
-
-
-
-// let text = document.querySelector('input');
-let text= $('input')
-
-$('html').keydown((e)=> {
-  if (e.which == 13 && text.val().length !== 0) {
-    console.log(text.val());
-    socket.emit('message', text.val());
-    text.val(' ');
-  }
-})
-
-
-socket.on('createMessage', message => {
-  console.log("this is commign form the server", message);
-})
-
-
+const scrollToBottom = () => {
+  let d = $(".main__chat_window");
+  d.scrollTop(d.prop("scrollHeight"));
+};
 
 //socket.emit --sends the data
 //scoket.on --listens to the data
